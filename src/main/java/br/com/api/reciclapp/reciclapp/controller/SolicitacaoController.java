@@ -34,4 +34,9 @@ public class SolicitacaoController {
     public List<Solicitacao> listaSolicitacoesPorUsuario(@PathVariable Long idUsuario) {
         return service.findByUsuario(idUsuario);
     }
+
+    @GetMapping("/todas")
+    public List<Solicitacao> listaTodasSolicitacoes() {
+        return service.findAll();
+    }
 }

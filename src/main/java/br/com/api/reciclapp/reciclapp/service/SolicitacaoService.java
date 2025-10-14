@@ -22,4 +22,8 @@ public class SolicitacaoService {
         return repository.findByUsuario(idUsuario);
     }
 
+    public List<Solicitacao> findAll() {
+        return repository.findAll();
+    }
+
 }
