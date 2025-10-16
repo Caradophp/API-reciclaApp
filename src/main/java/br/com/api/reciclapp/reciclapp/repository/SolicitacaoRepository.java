@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.com.api.reciclapp.reciclapp.entity.Solicitacao;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> {
@@ -20,6 +21,7 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> 
                 "where s.id_usuario = :idUsuario";
 
     @org.springframework.data.jpa.repository.Query(value = query, nativeQuery = true)
+    @Transactional(timeout = 10)
     List<Solicitacao> findByUsuario(@Param("idUsuario") Long idUsuario);
 
     

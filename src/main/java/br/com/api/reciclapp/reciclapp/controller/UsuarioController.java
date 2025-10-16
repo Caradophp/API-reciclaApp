@@ -2,6 +2,8 @@ package br.com.api.reciclapp.reciclapp.controller;
 
 import java.util.List;
 
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
+import br.com.api.reciclapp.reciclapp.utils.VerificaTipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

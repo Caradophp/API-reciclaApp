@@ -1,14 +1,8 @@
 package br.com.api.reciclapp.reciclapp.entity;
 
 // import br.com.api.reciclapp.reciclapp.enums.SolicitacaoEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import br.com.api.reciclapp.reciclapp.enums.SolicitacaoEnum;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "solicitacoes")
@@ -19,7 +13,9 @@ public class Solicitacao {
     @Column(name = "id_solicitacao")    
     private long id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private SolicitacaoEnum status;
     
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -33,11 +29,11 @@ public class Solicitacao {
         this.id = id;
     }
 
-    public String getStatus() {
+    public SolicitacaoEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(SolicitacaoEnum status) {
         this.status = status;
     }
 

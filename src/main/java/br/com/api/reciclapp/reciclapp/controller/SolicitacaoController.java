@@ -2,6 +2,9 @@ package br.com.api.reciclapp.reciclapp.controller;
 
 import java.util.List;
 
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
+import br.com.api.reciclapp.reciclapp.exceptions.ColetorSolicitacaoException;
+import br.com.api.reciclapp.reciclapp.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +23,14 @@ public class SolicitacaoController {
     @Autowired
     private SolicitacaoService service;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @PostMapping
     public void criarSolicitacao(@RequestBody Solicitacao solicitacao) {
 
-        if (solicitacao.getUsuario().getTipoUsuario() == "COLETOR") {
-            throw new RuntimeException("Usuário do tipo COLETOR não pode criar solicitações.");
+       if (usuarioService.findById(solicitacao.getUsuario().getId()).getTipoUsuario() == UsuarioEnum.COLETOR) {
+            throw new ColetorSolicitacaoException("Usuário 'COLETOR' não pode fazer solicitações");
         }
 
         service.save(solicitacao);

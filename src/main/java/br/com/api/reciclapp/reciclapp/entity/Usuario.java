@@ -1,13 +1,7 @@
 package br.com.api.reciclapp.reciclapp.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
@@ -20,7 +14,10 @@ public class Usuario {
 
     private String nome;
     private String email;
-    private String tipoUsuario;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario")
+    private UsuarioEnum tipoUsuario;
     private String senha;
     private String img;
 
@@ -52,11 +49,11 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getTipoUsuario() {
+    public UsuarioEnum getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(String tipoUsuario) {
+    public void setTipoUsuario(UsuarioEnum tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
