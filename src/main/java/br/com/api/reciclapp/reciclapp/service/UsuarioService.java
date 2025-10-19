@@ -15,7 +15,7 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     public Usuario login(String email, String senha) {
-        return repository.findByEmailAndSenha(email, senha);
+        return null;
     }
 
     public Usuario save(Usuario usuario) {

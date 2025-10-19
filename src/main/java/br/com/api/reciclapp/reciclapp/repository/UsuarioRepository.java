@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import br.com.api.reciclapp.reciclapp.entity.Usuario;
 
-@Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Long>{   
+import java.util.Optional;
 
-    Usuario findByEmailAndSenha(String email, String senha);
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
+
+    Optional<Usuario> getUserInfoByEmail(String userName);
 
 }

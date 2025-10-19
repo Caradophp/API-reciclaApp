@@ -1,11 +1,14 @@
 package br.com.api.reciclapp.reciclapp.controller;
 
 import java.util.List;
+import java.util.Map;
 
-import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
-import br.com.api.reciclapp.reciclapp.exceptions.UsuarioDesconhecidoException;
-import br.com.api.reciclapp.reciclapp.utils.VerificaTipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,22 +30,30 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     @ResponseBody
-    public Usuario login(@RequestBody Usuario usuario, HttpSession session) {
-        Usuario u =  service.login(usuario.getEmail(), usuario.getSenha());
-
-        if (u != null) {
-            session.setAttribute("usuarioLogado", u);
-            return u;
-        } else {
-            return null;
+    public ResponseEntity<?> login(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("erro", "Credenciais inválidas"));
         }
+
+        String s = "Login efetuado com sucesso";
+        var usuario = Map.of(
+                "username", authentication.getName(),
+                "mensagem", s
+        );
+
+        return ResponseEntity.ok(usuario);
     }
 
     @PostMapping
     @ResponseBody
     public Usuario criarUsuario(@RequestBody Usuario usuario) {
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return service.save(usuario);
     }
     
