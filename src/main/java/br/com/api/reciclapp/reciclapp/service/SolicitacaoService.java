@@ -2,7 +2,9 @@ package br.com.api.reciclapp.reciclapp.service;
 
 import java.util.List;
 
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import br.com.api.reciclapp.reciclapp.entity.Solicitacao;
@@ -20,6 +22,22 @@ public class SolicitacaoService {
 
     public List<Solicitacao> findByUsuario(Long idUsuario) {
         return repository.findByUsuario(idUsuario);
+    }
+    public void cadSolicitacao(
+            String nome,
+            String email,
+            String senha,
+            UsuarioEnum tipoUSuario,
+            long idRua,
+            String numero,
+            String img
+    ) {
+
+        repository.CadastrarUsuarioViaProcedure(
+                nome, email, senha, tipoUSuario,
+                idRua, numero, img
+        );
+
     }
 
     public List<Solicitacao> findAll() {
