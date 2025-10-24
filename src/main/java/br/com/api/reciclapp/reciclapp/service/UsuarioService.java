@@ -2,6 +2,7 @@ package br.com.api.reciclapp.reciclapp.service;
 
 import java.util.List;
 
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,32 @@ public class UsuarioService {
 
     public Usuario login(String email, String senha) {
         return null;
+    }
+
+    public void cadSolicitacao(
+            String nome,
+            String email,
+            String senha,
+            UsuarioEnum tipoUSuario,
+            long idRua,
+            String numero,
+            String img
+    ) {
+
+        if (tipoUSuario.equals(UsuarioEnum.COLETOR)) {
+            repository.CadastrarUsuarioViaProcedure(
+                    nome, email, senha, "COLETOR",
+                    idRua, numero, img
+            );
+        } else if (tipoUSuario.equals(UsuarioEnum.COMUM)) {
+            repository.CadastrarUsuarioViaProcedure(
+                    nome, email, senha, "COMUM",
+                    idRua, numero, img
+            );
+        } else {
+            throw new IllegalArgumentException("Tipo de usuário não conhecido");
+        }
+
     }
 
     public Usuario save(Usuario usuario) {

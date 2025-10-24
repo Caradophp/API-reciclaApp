@@ -23,22 +23,6 @@ public class SolicitacaoService {
     public List<Solicitacao> findByUsuario(Long idUsuario) {
         return repository.findByUsuario(idUsuario);
     }
-    public void cadSolicitacao(
-            String nome,
-            String email,
-            String senha,
-            UsuarioEnum tipoUSuario,
-            long idRua,
-            String numero,
-            String img
-    ) {
-
-        repository.CadastrarUsuarioViaProcedure(
-                nome, email, senha, tipoUSuario,
-                idRua, numero, img
-        );
-
-    }
 
     public List<Solicitacao> findAll() {
         return repository.findAll();

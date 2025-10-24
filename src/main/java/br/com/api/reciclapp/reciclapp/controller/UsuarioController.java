@@ -1,8 +1,11 @@
 package br.com.api.reciclapp.reciclapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +58,55 @@ public class UsuarioController {
     public Usuario criarUsuario(@RequestBody Usuario usuario) {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return service.save(usuario);
+    }
+
+    @PostMapping("/procedure")
+    public ResponseEntity<?> cadViaProcedure(@RequestBody String json) {
+
+        List<String> values = new ArrayList<>();
+
+        if (json.isEmpty()) {
+            throw new IllegalArgumentException("Json enviado para api não pode ser vazio");
+        }
+
+        json = json.replace("{", "");
+        json = json.replace("}", "");
+        json = json.trim();
+        List<String> jsonF = List.of(json.split(","));
+
+        for (String j : jsonF) {
+            j = List.of(List.of(j.split(":")).get(1).trim().split("\"")).toString();
+            values.add(j);
+        }
+
+        List<String> formatJson = new ArrayList<>();
+        int count = 0;
+        for (String v : values) {
+            String[] split = v.split(",");
+            if (count == 4) {
+                v = split[0].replace("]", "");
+            } else {
+                v = split[1].replace("]", "");
+            }
+
+            String n;
+            if (v.charAt(0) == '[') {
+                n = v.replace("[", "");
+                formatJson.add(n.trim());
+            } else {
+                formatJson.add(v.trim());
+            }
+            count++;
+        }
+
+        if (Objects.equals(formatJson.get(3), "COLETOR")) {
+            service.cadSolicitacao(formatJson.get(0), formatJson.get(1), formatJson.get(2), UsuarioEnum.COLETOR, Long.valueOf(formatJson.get(4)), formatJson.get(5), formatJson.get(6));
+        } else {
+            service.cadSolicitacao(formatJson.get(0), formatJson.get(1), formatJson.get(2), UsuarioEnum.COMUM, Long.valueOf(formatJson.get(4)), formatJson.get(5), formatJson.get(6));
+        }
+
+        return ResponseEntity.ok().build();
+
     }
     
     @GetMapping

@@ -26,18 +26,4 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> 
     @Transactional(timeout = 10)
     List<Solicitacao> findByUsuario(@Param("idUsuario") Long idUsuario);
 
-    String procedureCall = "call cad_user_address(:nome, :email, :senha, :tipoUsuario, :idRua, :numero, :img)";
-
-    @Query(value = procedureCall, nativeQuery = true)
-    void CadastrarUsuarioViaProcedure(
-            @Param("nome") String nome,
-            @Param("email") String email,
-            @Param("senha") String senha,
-            @Param("tipoUsuario") UsuarioEnum tipoUSuario,
-            @Param("idRua") long idRua,
-            @Param("numero") String numero,
-            @Param("img") String img
-            );
-
-    
 } 
