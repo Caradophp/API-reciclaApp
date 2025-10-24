@@ -1,11 +1,10 @@
 package br.com.api.reciclapp.reciclapp.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> login(Authentication authentication) {
+    public ResponseEntity<?> login(Authentication authentication, HttpServletResponse response) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("erro", "Credenciais inválidas"));
@@ -49,6 +48,15 @@ public class UsuarioController {
                 "username", authentication.getName(),
                 "mensagem", s
         );
+
+        Cookie cookie = new Cookie("useridsession", String.valueOf(UUID.randomUUID()));
+
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+
+        response.addCookie(cookie);
 
         return ResponseEntity.ok(usuario);
     }
@@ -105,7 +113,7 @@ public class UsuarioController {
             service.cadSolicitacao(formatJson.get(0), formatJson.get(1), formatJson.get(2), UsuarioEnum.COMUM, Long.valueOf(formatJson.get(4)), formatJson.get(5), formatJson.get(6));
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
     
