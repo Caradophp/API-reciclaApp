@@ -3,7 +3,9 @@ package br.com.api.reciclapp.reciclapp.controller;
 import java.util.*;
 
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
+import br.com.api.reciclapp.reciclapp.utils.CriaSession;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,30 +37,32 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CriaSession cs;
+
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> login(Authentication authentication, HttpServletResponse response) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("erro", "Credenciais inválidas"));
+    public ResponseEntity<?> login(Authentication authentication, HttpServletResponse response, HttpServletRequest request) {
+
+        if (!request.getRequestURI().equals("/usuarios/login")) {
+            if (authentication == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("erro", "Credenciais inválidas"));
+            }
         }
 
         String s = "Login efetuado com sucesso";
-        var usuario = Map.of(
-                "username", authentication.getName(),
-                "mensagem", s
-        );
 
-        Cookie cookie = new Cookie("useridsession", String.valueOf(UUID.randomUUID()));
-
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
-
+//        Cookie cookie = new Cookie("useridsession", String.valueOf(UUID.randomUUID()));
+//
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(false);
+//        cookie.setPath("/");
+//        cookie.setMaxAge(60 * 60);
+        Cookie cookie = cs.criarSessao();
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok(s);
     }
 
     @PostMapping

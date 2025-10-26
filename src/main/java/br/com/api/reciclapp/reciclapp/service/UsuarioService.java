@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.api.reciclapp.reciclapp.entity.Usuario;
@@ -14,6 +15,9 @@ public class UsuarioService {
     
     @Autowired
     private UsuarioRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Usuario login(String email, String senha) {
         return null;
@@ -29,14 +33,16 @@ public class UsuarioService {
             String img
     ) {
 
+        String senhaHash = passwordEncoder.encode(senha);
+
         if (tipoUSuario.equals(UsuarioEnum.COLETOR)) {
             repository.CadastrarUsuarioViaProcedure(
-                    nome, email, senha, "COLETOR",
+                    nome, email, senhaHash, "COLETOR",
                     idRua, numero, img
             );
         } else if (tipoUSuario.equals(UsuarioEnum.COMUM)) {
             repository.CadastrarUsuarioViaProcedure(
-                    nome, email, senha, "COMUM",
+                    nome, email, senhaHash, "COMUM",
                     idRua, numero, img
             );
         } else {
