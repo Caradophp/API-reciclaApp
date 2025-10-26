@@ -2,6 +2,7 @@ package br.com.api.reciclapp.reciclapp.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
@@ -42,7 +43,7 @@ public class SolicitacaoController {
     }
 
     @GetMapping({"/{idUsuario}"})
-    public List<Solicitacao> listaSolicitacoesPorUsuario(@PathVariable Long idUsuario) {
+    public List<Map<String, Object>> listaSolicitacoesPorUsuario(@PathVariable Long idUsuario) {
         return service.findByUsuario(idUsuario);
     }
 

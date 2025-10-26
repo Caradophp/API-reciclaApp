@@ -1,6 +1,7 @@
 package br.com.api.reciclapp.reciclapp.service;
 
 import java.util.List;
+import java.util.Map;
 
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class SolicitacaoService {
         return repository.save(solicitacao);
     }
 
-    public List<Solicitacao> findByUsuario(Long idUsuario) {
+    public List<Map<String, Object>> findByUsuario(Long idUsuario) {
         return repository.findByUsuario(idUsuario);
     }
 
