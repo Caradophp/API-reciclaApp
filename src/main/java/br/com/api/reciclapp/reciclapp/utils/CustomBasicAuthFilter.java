@@ -66,15 +66,6 @@ public class CustomBasicAuthFilter extends OncePerRequestFilter {
                     .setParameter("id", sessionid)
                     .getSingleResult();
 
-            if (query == null) {
-                throw new AccessDeniedException("Usuário não logado");
-            }
-
-            if (headerAuthorization == null || !headerAuthorization.startsWith("Basic ") || !sessionCookieExists) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
             String base64Credentials = headerAuthorization.substring(6);
             byte[] decodedBytes = Base64.getDecoder().decode(base64Credentials);
             String decodedString = new String(decodedBytes);
@@ -82,6 +73,15 @@ public class CustomBasicAuthFilter extends OncePerRequestFilter {
 
             String useremail = credentials[0];
             String password = credentials[1];
+
+            if (query == null || !query.getUsuario().getEmail().equals(useremail)) {
+                throw new AccessDeniedException("Usuário não logado");
+            }
+
+            if (headerAuthorization == null || !headerAuthorization.startsWith("Basic ") || !sessionCookieExists) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             usuarioRepository.getUserInfoByEmail(useremail).ifPresent(usuario -> {
                 if (passwordEncoder.matches(password, usuario.getSenha())) {
