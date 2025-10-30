@@ -27,7 +27,7 @@ public class UsuarioService {
             String nome,
             String email,
             String senha,
-            UsuarioEnum tipoUSuario,
+            UsuarioEnum tipoUsuario,
             long idRua,
             String numero,
             String img
@@ -35,12 +35,12 @@ public class UsuarioService {
 
         String senhaHash = passwordEncoder.encode(senha);
 
-        if (tipoUSuario.equals(UsuarioEnum.COLETOR)) {
+        if (tipoUsuario.equals(UsuarioEnum.COLETOR)) {
             repository.CadastrarUsuarioViaProcedure(
                     nome, email, senhaHash, "COLETOR",
                     idRua, numero, img
             );
-        } else if (tipoUSuario.equals(UsuarioEnum.COMUM)) {
+        } else if (tipoUsuario.equals(UsuarioEnum.COMUM)) {
             repository.CadastrarUsuarioViaProcedure(
                     nome, email, senhaHash, "COMUM",
                     idRua, numero, img

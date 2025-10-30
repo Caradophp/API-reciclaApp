@@ -2,6 +2,7 @@ package br.com.api.reciclapp.reciclapp.controller;
 
 import java.util.*;
 
+import br.com.api.reciclapp.reciclapp.dto.CadastroUsuarioDTO;
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import br.com.api.reciclapp.reciclapp.utils.CriaSession;
 import jakarta.servlet.http.Cookie;
@@ -53,13 +54,16 @@ public class UsuarioController {
 
         String s = "Login efetuado com sucesso";
 
-//        Cookie cookie = new Cookie("useridsession", String.valueOf(UUID.randomUUID()));
-//
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(false);
-//        cookie.setPath("/");
-//        cookie.setMaxAge(60 * 60);
-        Cookie cookie = cs.criarSessao();
+        var headerAuthorization = request.getHeader("Authorization");
+
+        String base64Credentials = headerAuthorization.substring(6);
+        byte[] decodedBytes = Base64.getDecoder().decode(base64Credentials);
+        String decodedString = new String(decodedBytes);
+        String[] credentials = decodedString.split(":", 2);
+
+        String useremail = credentials[0];
+
+        Cookie cookie = cs.criarSessao(useremail);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(s);
@@ -73,50 +77,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/procedure")
-    public ResponseEntity<?> cadViaProcedure(@RequestBody String json) {
-
-        List<String> values = new ArrayList<>();
-
-        if (json.isEmpty()) {
-            throw new IllegalArgumentException("Json enviado para api não pode ser vazio");
-        }
-
-        json = json.replace("{", "");
-        json = json.replace("}", "");
-        json = json.trim();
-        List<String> jsonF = List.of(json.split(","));
-
-        for (String j : jsonF) {
-            j = List.of(List.of(j.split(":")).get(1).trim().split("\"")).toString();
-            values.add(j);
-        }
-
-        List<String> formatJson = new ArrayList<>();
-        int count = 0;
-        for (String v : values) {
-            String[] split = v.split(",");
-            if (count == 4) {
-                v = split[0].replace("]", "");
-            } else {
-                v = split[1].replace("]", "");
-            }
-
-            String n;
-            if (v.charAt(0) == '[') {
-                n = v.replace("[", "");
-                formatJson.add(n.trim());
-            } else {
-                formatJson.add(v.trim());
-            }
-            count++;
-        }
-
-        if (Objects.equals(formatJson.get(3), "COLETOR")) {
-            service.cadSolicitacao(formatJson.get(0), formatJson.get(1), formatJson.get(2), UsuarioEnum.COLETOR, Long.valueOf(formatJson.get(4)), formatJson.get(5), formatJson.get(6));
-        } else {
-            service.cadSolicitacao(formatJson.get(0), formatJson.get(1), formatJson.get(2), UsuarioEnum.COMUM, Long.valueOf(formatJson.get(4)), formatJson.get(5), formatJson.get(6));
-        }
-
+    public ResponseEntity<?> cadViaProcedure(@RequestBody CadastroUsuarioDTO dto) {
+        System.out.println(dto.toString());
+        service.cadSolicitacao(dto.nome(), dto.email(), dto.senha(), dto.tipoUsuario(), dto.idRua(), dto.numero(), dto.img());
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }

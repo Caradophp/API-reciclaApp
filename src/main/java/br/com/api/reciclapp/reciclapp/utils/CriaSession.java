@@ -1,6 +1,7 @@
 package br.com.api.reciclapp.reciclapp.utils;
 
 import br.com.api.reciclapp.reciclapp.entity.Session;
+import br.com.api.reciclapp.reciclapp.entity.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
@@ -20,7 +21,7 @@ public class CriaSession {
     EntityManager em;
 
     @Transactional
-    public Cookie criarSessao() {
+    public Cookie criarSessao(String useremail) {
             UUID id = UUID.randomUUID();
             Timestamp inicio = Timestamp.from(Instant.now());
             Timestamp fim = Timestamp.from(Instant.now().plusSeconds(60 * 60)); // 1h
@@ -32,8 +33,10 @@ public class CriaSession {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60);
 
+            Usuario usuario = em.createQuery("from Usuario u where u.email = :email", Usuario.class).setParameter("email", useremail).getSingleResult();
+
             // Persiste sessão no banco dentro da mesma transação
-            Session session = new Session(id, inicio, fim);
+            Session session = new Session(id, inicio, fim, usuario);
             em.persist(session);
 
             return cookie;

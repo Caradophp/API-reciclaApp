@@ -52,7 +52,12 @@ public class CustomBasicAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        if (!sessionCookieExists && !request.getRequestURI().equals("/usuarios/login")) {
+        if (request.getRequestURI().equals("/usuarios/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (!sessionCookieExists) {
             throw new AccessDeniedException("Usuário não logado");
         }
 
@@ -81,7 +86,7 @@ public class CustomBasicAuthFilter extends OncePerRequestFilter {
             usuarioRepository.getUserInfoByEmail(useremail).ifPresent(usuario -> {
                 if (passwordEncoder.matches(password, usuario.getSenha())) {
                     var authToken = new UsernamePasswordAuthenticationToken(
-                            usuario.getNome(),
+                            usuario.getEmail(),
                             null,
                             List.of()
                     );
