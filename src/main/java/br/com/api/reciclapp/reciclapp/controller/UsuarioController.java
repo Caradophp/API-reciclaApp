@@ -78,10 +78,8 @@ public class UsuarioController {
 
     @PostMapping("/procedure")
     public ResponseEntity<?> cadViaProcedure(@RequestBody CadastroUsuarioDTO dto) {
-        System.out.println(dto.toString());
-        service.cadSolicitacao(dto.nome(), dto.email(), dto.senha(), dto.tipoUsuario(), dto.idRua(), dto.numero(), dto.img());
+        service.cadSolicitacao(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
     
     @GetMapping

@@ -2,6 +2,7 @@ package br.com.api.reciclapp.reciclapp.service;
 
 import java.util.List;
 
+import br.com.api.reciclapp.reciclapp.dto.CadastroUsuarioDTO;
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,27 +24,19 @@ public class UsuarioService {
         return null;
     }
 
-    public void cadSolicitacao(
-            String nome,
-            String email,
-            String senha,
-            UsuarioEnum tipoUsuario,
-            long idRua,
-            String numero,
-            String img
-    ) {
+    public void cadSolicitacao(CadastroUsuarioDTO dto) {
 
-        String senhaHash = passwordEncoder.encode(senha);
+        String senhaHash = passwordEncoder.encode(dto.senha());
 
-        if (tipoUsuario.equals(UsuarioEnum.COLETOR)) {
+        if (dto.tipoUsuario().equals(UsuarioEnum.COLETOR)) {
             repository.CadastrarUsuarioViaProcedure(
-                    nome, email, senhaHash, "COLETOR",
-                    idRua, numero, img
+                    dto.nome(), dto.email(), senhaHash, "COLETOR",
+                    dto.idRua(), dto.numero(), dto.img()
             );
-        } else if (tipoUsuario.equals(UsuarioEnum.COMUM)) {
+        } else if (dto.tipoUsuario().equals(UsuarioEnum.COMUM)) {
             repository.CadastrarUsuarioViaProcedure(
-                    nome, email, senhaHash, "COMUM",
-                    idRua, numero, img
+                    dto.nome(), dto.email(), senhaHash, "COMUM",
+                    dto.idRua(), dto.numero(), dto.img()
             );
         } else {
             throw new IllegalArgumentException("Tipo de usuário não conhecido");
