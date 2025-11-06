@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
     Optional<Usuario> getUserInfoByEmail(String userName);
+    Usuario findByEmail(String email);
 
     String procedureCall = "call cad_user_address(?1, ?2, ?3, ?4, ?5, ?6, ?7)";
 

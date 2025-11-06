@@ -52,8 +52,6 @@ public class UsuarioController {
             }
         }
 
-        String s = "Login efetuado com sucesso";
-
         var headerAuthorization = request.getHeader("Authorization");
 
         String base64Credentials = headerAuthorization.substring(6);
@@ -63,10 +61,16 @@ public class UsuarioController {
 
         String useremail = credentials[0];
 
+        long idUsuarioLogado = service.findByEmail(useremail);
+
         Cookie cookie = cs.criarSessao(useremail);
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(s);
+        Map<String, String> params = new HashMap<>();
+        params.put("Aviso", "Logado com sucesso");
+        params.put("ID", String.valueOf(idUsuarioLogado));
+
+        return ResponseEntity.status(HttpStatus.OK).body(params);
     }
 
     @PostMapping
