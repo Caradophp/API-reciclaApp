@@ -17,6 +17,9 @@ public class Solicitacao {
     @Column(name = "id_solicitacao")    
     private long id;
 
+    @Column(name = "quantidade_em_quilos",columnDefinition = "int default 0")
+    private int quantidadeEmQuilos;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private SolicitacaoEnum status;
