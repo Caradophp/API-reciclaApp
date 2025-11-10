@@ -5,6 +5,8 @@ import java.util.*;
 import br.com.api.reciclapp.reciclapp.dto.CadastroUsuarioDTO;
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import br.com.api.reciclapp.reciclapp.utils.CriaSession;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +36,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -108,6 +113,16 @@ public class UsuarioController {
     @ResponseBody
     public void deletarUsuario(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/obter-usuario-logado/{idSessao}")
+    @ResponseBody
+    public long obterIdUsuarioPorIdSessao(@PathVariable UUID idSessao) {
+        Usuario usuarioLogado = em.createQuery("select s.usuario from Session s where id = :id", Usuario.class)
+                .setParameter("id", idSessao)
+                .getSingleResult();
+
+        return usuarioLogado.getId();
     }
 
 }

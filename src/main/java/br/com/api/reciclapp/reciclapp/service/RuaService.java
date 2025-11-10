@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import br.com.api.reciclapp.reciclapp.entity.Rua;
 import br.com.api.reciclapp.reciclapp.repository.RuaRepository;
 
+import java.util.List;
+
 @Service
 public class RuaService {
     
@@ -16,4 +18,7 @@ public class RuaService {
         return repository.save(rua);
     }
 
+    public List<Rua> findAll() {
+        return repository.findAll();
+    }
 }
