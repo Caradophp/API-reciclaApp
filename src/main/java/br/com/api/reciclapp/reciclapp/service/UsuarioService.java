@@ -56,8 +56,8 @@ public class UsuarioService {
         return repository.findById(id).orElse(null);
     }
 
-    public Long findByEmail(String email) {
-        return repository.findByEmail(email).getId();
+    public Usuario findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     public Usuario update(Long id, Usuario usuario) {

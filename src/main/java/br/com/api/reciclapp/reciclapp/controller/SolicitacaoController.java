@@ -3,6 +3,7 @@ package br.com.api.reciclapp.reciclapp.controller;
 import java.util.List;
 import java.util.Map;
 
+import br.com.api.reciclapp.reciclapp.dto.SolicitacaoDTO;
 import br.com.api.reciclapp.reciclapp.enums.UsuarioEnum;
 import br.com.api.reciclapp.reciclapp.exceptions.ColetorSolicitacaoException;
 import br.com.api.reciclapp.reciclapp.service.UsuarioService;
@@ -27,28 +28,36 @@ public class SolicitacaoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping
-    public ResponseEntity<?> criarSolicitacao(@RequestBody Solicitacao solicitacao) {
+    @Autowired
+    private VerificaTipoUsuario verificaTipoUsuario;
 
-       if (VerificaTipoUsuario.getTipo(solicitacao) == UsuarioEnum.COLETOR) {
+    @PostMapping
+    public ResponseEntity<?> criarSolicitacao(@RequestBody SolicitacaoDTO solicitacao) {
+
+        Solicitacao s = new Solicitacao();
+        s.setStatus(solicitacao.status());
+        s.setQuantidadeEmQuilos(solicitacao.quantidadeEmQuilos());
+        s.setUsuario(usuarioService.findById(solicitacao.idUsuario()));
+
+       if (verificaTipoUsuario.getTipo(s) == UsuarioEnum.COLETOR) {
             throw new ColetorSolicitacaoException("Usuário 'COLETOR' não pode fazer solicitações");
        }
 
-       if (solicitacao.getQuantidadeEmQuilos() < QUANTIDADE_MINIMA_EM_QUILOS) {
+       if (s.getQuantidadeEmQuilos() < QUANTIDADE_MINIMA_EM_QUILOS) {
             return ResponseEntity.badRequest().body("A quantidatade minima de resíduos precisa ser de no minímo " + QUANTIDADE_MINIMA_EM_QUILOS + " Quilos");
        }
 
-       service.save(solicitacao);
+       service.save(s);
        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping({"/{idUsuario}"})
-    public List<Map<String, Object>> listaSolicitacoesPorUsuario(@PathVariable Long idUsuario) {
-        return service.findByUsuario(idUsuario);
+    public ResponseEntity<List<Map<String, Object>>> listaSolicitacoesPorUsuario(@PathVariable Long idUsuario) {
+        return ResponseEntity.ok(service.findByUsuario(idUsuario));
     }
 
     @GetMapping("/todas")
-    public List<Solicitacao> listaTodasSolicitacoes() {
+    public List<Map<String, Object>> listaTodasSolicitacoes() {
         return service.findAll();
     }
 

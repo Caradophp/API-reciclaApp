@@ -28,8 +28,8 @@ public class SolicitacaoService {
         return repository.findByUsuario(idUsuario);
     }
 
-    public List<Solicitacao> findAll() {
-        return repository.findAll();
+    public List<Map<String, Object>> findAll() {
+        return repository.findAllSolicitacoes();
     }
 
     public boolean atualizarStatus(long id) {

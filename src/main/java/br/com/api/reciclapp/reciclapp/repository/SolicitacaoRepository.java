@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> {
 
-    String query = "select b.nome as bairro, r.nome as rua, numero, s.status from solicitacoes s\n" + //
+    String query = "select s.id_solicitacao as id, b.nome as bairro, r.nome as rua, numero, s.status from solicitacoes s\n" + //
                 "inner join usuarios u on u.id_usuario = s.id_usuario\n" + //
                 "inner join endereco e on e.id_endereco = u.id_endereco\n" + //
                 "inner join rua r on r.id_rua = e.id_rua\n" + //
@@ -25,5 +25,14 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> 
     @org.springframework.data.jpa.repository.Query(value = query, nativeQuery = true)
     @Transactional(timeout = 10)
     List<Map<String, Object>> findByUsuario(@Param("idUsuario") Long idUsuario);
+
+    String sql = "select s.id_solicitacao as id, b.nome as bairro, r.nome as rua, numero, s.status from solicitacoes s\n" +
+            "inner join usuarios u on u.id_usuario = s.id_usuario\n" +
+            "inner join endereco e on e.id_endereco = u.id_endereco\n" +
+            "inner join rua r on r.id_rua = e.id_rua\n" +
+            "inner join bairro b on b.id_bairro = r.id_bairro";
+
+    @Query(value = sql, nativeQuery = true)
+    List<Map<String, Object>> findAllSolicitacoes();
 
 } 

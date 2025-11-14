@@ -66,14 +66,15 @@ public class UsuarioController {
 
         String useremail = credentials[0];
 
-        long idUsuarioLogado = service.findByEmail(useremail);
+        Usuario usuarioLogado = service.findByEmail(useremail);
 
         Cookie cookie = cs.criarSessao(useremail);
         response.addCookie(cookie);
 
         Map<String, String> params = new HashMap<>();
         params.put("Aviso", "Logado com sucesso");
-        params.put("ID", String.valueOf(idUsuarioLogado));
+        params.put("id", String.valueOf(usuarioLogado.getId()));
+        params.put("tipo", usuarioLogado.getTipoUsuario().toString().toUpperCase());
 
         return ResponseEntity.status(HttpStatus.OK).body(params);
     }
